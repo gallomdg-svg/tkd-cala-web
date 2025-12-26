@@ -1,9 +1,7 @@
-// app/layout.tsx
 import './globals.css'
 
 export const metadata = {
-  title: 'TKD Cala',
-  description: 'Plataforma web de alumnos',
+  title: 'TKD Grupo Cala',
 }
 
 export default function RootLayout({
@@ -13,7 +11,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body className="min-h-screen bg-gray-100 text-gray-900">
+      <body className="min-h-screen bg-gray-100">
         {children}
       </body>
     </html>
