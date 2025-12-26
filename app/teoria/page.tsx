@@ -1,36 +1,10 @@
-"use client";
+'use client'
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-
-export default function PerfilPage() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const logged = localStorage.getItem("logged");
-    if (!logged) {
-      router.push("/login");
-    }
-  }, [router]);
-
-  function logout() {
-    localStorage.removeItem("logged");
-    router.push("/");
-  }
-
+export default function TeoriaPage() {
   return (
-    <main style={{ padding: 40 }}>
-      <h2>Mi Perfil</h2>
-
-      <p>Nombre: Alumno</p>
-      <p>Graduación: --</p>
-
-      <Link href="/app/teoria">Ir a Teoría</Link>
-
-      <br /><br />
-
-      <button onClick={logout}>Cerrar sesión</button>
+    <main style={{ maxWidth: 600, margin: '50px auto' }}>
+      <h1>Teoría</h1>
+      <p>Contenido teórico para alumnos.</p>
     </main>
-  );
+  )
 }
