@@ -1,36 +1,30 @@
-"use client";
+'use client'
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
+import { useRouter } from 'next/navigation'
+import { supabase } from '@/lib/supabaseClient'
 
 export default function PerfilPage() {
-  const router = useRouter();
+  const router = useRouter()
 
-  useEffect(() => {
-    const logged = localStorage.getItem("logged");
-    if (!logged) {
-      router.push("/login");
-    }
-  }, [router]);
-
-  function logout() {
-    localStorage.removeItem("logged");
-    router.push("/");
+  const logout = async () => {
+    await supabase.auth.signOut()
+    router.push('/')
   }
 
   return (
-    <main style={{ padding: 40 }}>
-      <h2>Mi Perfil</h2>
+    <main style={{ maxWidth: 600, margin: '50px auto' }}>
+      <h1>Mi perfil</h1>
 
-      <p>Nombre: Alumno</p>
-      <p>Graduación: --</p>
-
-      <Link href="/app/teoria">Ir a Teoría</Link>
-
-      <br /><br />
+      <ul>
+        <li>
+          <a href="/perfil">Mi perfil</a>
+        </li>
+        <li>
+          <a href="/teoria">Teoría</a>
+        </li>
+      </ul>
 
       <button onClick={logout}>Cerrar sesión</button>
     </main>
-  );
+  )
 }
