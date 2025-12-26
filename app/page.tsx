@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabaseClient";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -9,17 +10,25 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Usuario de prueba
-  const USUARIO_TEST = "alumno@tkd.com";
-  const PASSWORD_TEST = "1234";
+  const handleLogin = async () => {
+    setError("");
+    setLoading(true);
 
-  const handleLogin = () => {
-    if (email === USUARIO_TEST && password === PASSWORD_TEST) {
-      router.push("/perfil");
-    } else {
-      setError("Usuario o contraseña incorrectos");
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    setLoading(false);
+
+    if (error) {
+      setError(error.message);
+      return;
     }
+
+    router.push("/perfil");
   };
 
   return (
@@ -45,8 +54,12 @@ export default function LoginPage() {
 
         {error && <p style={styles.error}>{error}</p>}
 
-        <button onClick={handleLogin} style={styles.button}>
-          Ingresar
+        <button
+          onClick={handleLogin}
+          style={styles.button}
+          disabled={loading}
+        >
+          {loading ? "Ingresando..." : "Ingresar"}
         </button>
       </div>
     </main>
