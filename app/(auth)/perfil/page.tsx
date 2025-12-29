@@ -19,6 +19,7 @@ export default function PerfilPage() {
   const [alumno, setAlumno] = useState<Alumno | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+	const { data: { user } } = await supabase.auth.getUser()
 
   useEffect(() => {
     const loadPerfil = async () => {
@@ -32,7 +33,7 @@ export default function PerfilPage() {
         router.push('/')
         return
       }
-	const { data: { user } } = await supabase.auth.getUser()
+
 	console.log('USER AUTH:', user)
 
       // 2. Buscar alumno por user_id
