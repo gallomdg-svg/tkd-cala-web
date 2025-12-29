@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../../lib/supabaseClient'
 
+const { data: { user } } = await supabase.auth.getUser()
+console.log('USER AUTH:', user)
+
 interface Alumno {
   nombre: string
   apellido: string
@@ -47,7 +50,9 @@ export default function PerfilPage() {
         .single()
 
       if (error) {
-        setError('No se pudo cargar el perfil')
+	console.log('ALUMNO DATA:', data)
+	console.log('ALUMNO ERROR:', error)        
+	setError('No se pudo cargar el perfil')
         setLoading(false)
         return
       }
