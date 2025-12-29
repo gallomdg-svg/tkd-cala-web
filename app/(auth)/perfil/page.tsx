@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { supabase } from '../../../lib/supabaseClient'
 
-const { data: { user } } = await supabase.auth.getUser()
-console.log('USER AUTH:', user)
 
 interface Alumno {
   nombre: string
@@ -34,6 +32,8 @@ export default function PerfilPage() {
         router.push('/')
         return
       }
+	const { data: { user } } = await supabase.auth.getUser()
+	console.log('USER AUTH:', user)
 
       // 2. Buscar alumno por user_id
       const { data, error } = await supabase
