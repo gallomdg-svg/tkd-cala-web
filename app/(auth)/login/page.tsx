@@ -59,7 +59,7 @@ export default function LoginPage() {
       router.push("/profesor/perfil"); // layout profesor
     } else {
       console.log("➡️ Redirigiendo a alumno");
-      router.push("/alumno/perfil"); // layout alumno
+      router.push("../alumno/perfil"); // layout alumno
     }
 
     setLoading(false);
