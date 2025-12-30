@@ -22,11 +22,11 @@ export default function ProfesorLayout({
           background: "#fff",
         }}
       >
-        <Link href="/perfil">Perfil</Link>
-        <Link href="/teoria">Teoría</Link>
-        <Link href="/eventos">Eventos</Link>
-        <Link href="/mensajes">Mensajes</Link>
-        <Link href="/alumnos">Alumnos</Link>
+        <Link href="/profesor/perfil">Perfil</Link>
+        <Link href="/profesor/teoria">Teoría</Link>
+        <Link href="/profesor/eventos">Eventos</Link>
+        <Link href="/profesor/mensajes">Mensajes</Link>
+        <Link href="/profesor/alumnos">Alumnos</Link>
       </nav>
     </div>
   );
