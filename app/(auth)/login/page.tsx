@@ -1,8 +1,8 @@
 "use client";
 
+import { supabase } from "../../../lib/supabaseClient";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { supabase } from "../../../lib/supabaseClient";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,35 +10,61 @@ export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
     setLoading(true);
 
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    console.log("🔐 Intentando login:", email);
 
-    setLoading(false);
+    const { data: authData, error: authError } =
+      await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      setError(error.message);
+    console.log("👤 AUTH DATA:", authData);
+    console.log("❌ AUTH ERROR:", authError);
+
+    if (authError || !authData.user) {
+      alert("Error de login");
+      setLoading(false);
       return;
     }
 
-    // El redirect por rol ya lo maneja tu lógica existente
+    const userId = authData.user.id;
+
+    const { data: alumno, error: alumnoError } = await supabase
+      .from("alumnos")
+      .select("*")
+      .eq("user_id", userId)
+      .single();
+
+    console.log("📦 ALUMNO:", alumno);
+    console.log("❌ ALUMNO ERROR:", alumnoError);
+
+    if (alumnoError || !alumno) {
+      alert("No se encontró el perfil");
+      setLoading(false);
+      return;
+    }
+
+    if (alumno.rol === "profesor") {
+      router.push("/profesor/perfil");
+    } else {
+      router.push("/alumno/perfil");
+    }
+
+    setLoading(false);
   };
 
   return (
-    <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-600 to-red-800 px-4">
-      <div className="w-full max-w-sm bg-white rounded-2xl shadow-xl p-6">
+    <main className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-sm bg-white rounded-2xl shadow-lg p-6">
         {/* Header */}
         <div className="text-center mb-6">
           <h1 className="text-3xl font-bold text-red-600">TKD Cala</h1>
-          <p className="text-gray-500 text-sm">
+          <p className="text-gray-500 text-sm mt-1">
             Plataforma de alumnos y profesores
           </p>
         </div>
@@ -51,10 +77,10 @@ export default function LoginPage() {
             </label>
             <input
               type="email"
-              required
+              placeholder="alumno@tkd.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="alumno@tkd.com"
+              required
               className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
@@ -65,31 +91,22 @@ export default function LoginPage() {
             </label>
             <input
               type="password"
-              required
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
+              required
               className="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-red-500"
             />
           </div>
 
-          {error && (
-            <p className="text-sm text-red-600 text-center">{error}</p>
-          )}
-
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-red-600 text-white py-2 rounded-lg font-semibold hover:bg-red-700 transition disabled:opacity-50"
+            className="w-full bg-red-600 text-white py-2 rounded-lg font-medium hover:bg-red-700 transition disabled:opacity-60"
           >
             {loading ? "Ingresando..." : "Ingresar"}
           </button>
         </form>
-
-        {/* Footer */}
-        <p className="text-xs text-center text-gray-400 mt-6">
-          © TKD Cala
-        </p>
       </div>
     </main>
   );
