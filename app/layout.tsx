@@ -1,19 +1,14 @@
-import './globals.css'
-
-export const metadata = {
-  title: 'TKD Grupo Cala',
-}
+// app/layout.tsx
+import "./globals.css";
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="es">
-      <body className="min-h-screen bg-gray-100">
-        {children}
-      </body>
+      <body>{children}</body>
     </html>
-  )
+  );
 }
