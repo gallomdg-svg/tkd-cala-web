@@ -1,4 +1,3 @@
-// app/(alumno)/layout.tsx
 import Link from "next/link";
 
 export default function AlumnoLayout({
@@ -7,25 +6,24 @@ export default function AlumnoLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div>
-      <main style={{ paddingBottom: 60 }}>{children}</main>
+    <div className="min-h-screen flex flex-col bg-gray-50">
+      
+      {/* Header */}
+      <header className="bg-red-600 text-white px-4 py-3 font-semibold">
+        TKD Cala – Alumno
+      </header>
 
-      <nav
-        style={{
-          position: "fixed",
-          bottom: 0,
-          width: "100%",
-          display: "flex",
-          justifyContent: "space-around",
-          borderTop: "1px solid #ccc",
-          padding: 10,
-          background: "#fff",
-        }}
-      >
-        <Link href="/perfil">Perfil</Link>
-        <Link href="/teoria">Teoría</Link>
-        <Link href="/eventos">Eventos</Link>
-        <Link href="/mensajes">Mensajes</Link>
+      {/* Contenido */}
+      <main className="flex-1 p-4">
+        {children}
+      </main>
+
+      {/* Menú inferior mobile */}
+      <nav className="bg-white border-t flex justify-around py-2 text-sm">
+        <Link href="/alumno/perfil">Perfil</Link>
+        <Link href="/alumno/teoria">Teoría</Link>
+        <Link href="/alumno/eventos">Eventos</Link>
+        <Link href="/alumno/mensajes">Mensajes</Link>
       </nav>
     </div>
   );
