@@ -1,16 +1,20 @@
-import PublicNavbar from "@/components/layout/PublicNavbar";
-import WhatsAppButton from "@/components/ui/WhatsAppButton";
+import PublicNavbar from "@/components/layout/PublicNavbar"
+import WhatsAppButton from "@/components/ui/WhatsAppButton"
 
 export default function PublicLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
   return (
     <>
       <PublicNavbar />
-      <main>{children}</main>
+
+      <main className="min-h-screen">
+        {children}
+      </main>
+
       <WhatsAppButton />
     </>
-  );
+  )
 }
