@@ -11,6 +11,7 @@ type Props = {
 };
 
 export default function PrivateTopBar({ role }: Props) {
+
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
 
@@ -29,15 +30,15 @@ export default function PrivateTopBar({ role }: Props) {
   ];
 
   const profesorLinks = [
-    { href: "/profesor/alumnos", label: "Alumnos" },
-    { href: "/profesor/eventos", label: "Eventos" },
-    { href: "/profesor/notificaciones", label: "Notificaciones" },
     { href: "/profesor/perfil", label: "Perfil" },
+    { href: "/profesor/alumnos", label: "Alumnos" },
+    { href: "/profesor/notificaciones", label: "Notificaciones" },
+    { href: "/profesor/eventos", label: "Eventos" },
     { href: "/alumno/teoria", label: "Teoría" },
   ];
 
   const links = role === "alumno" ? alumnoLinks : profesorLinks;
-
+  
   return (
     <nav className="sticky top-[56px] z-40 bg-gray-50 border-b animate-slide-down">
       <div className="mx-auto max-w-7xl h-14 px-4 flex items-center justify-between md:justify-center">

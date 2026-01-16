@@ -30,7 +30,7 @@ export default function LoginPage() {
     // 🔑 Buscar perfil
     const { data: profile } = await supabaseClient
       .from("profiles")
-      .select("role")
+      .select("is_admin")
       .eq("id", data.user.id)
       .single();
 
@@ -41,10 +41,10 @@ export default function LoginPage() {
     }
 
     // 🎯 REDIRECCIÓN POR ROL
-    if (profile.role === "alumno") {
-      router.push("/alumno/perfil");
-    } else if (profile.role === "profesor") {
+    if (profile.is_admin === true) {
       router.push("/profesor/perfil");
+    } else {
+      router.push("/alumno/perfil");
     }
 
     setLoading(false);

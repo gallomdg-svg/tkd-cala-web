@@ -14,27 +14,31 @@ export async function middleware(req: NextRequest) {
 
   // 🔐 Rutas privadas
   if (pathname.startsWith("/alumno") || pathname.startsWith("/profesor")) {
+    // No logueado → login
     if (!user) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
 
-    const { data: profile } = await supabase
+    // Buscar profile
+    const { data: profile, error } = await supabase
       .from("profiles")
-      .select("role")
+      .select("is_admin")
       .eq("id", user.id)
       .single();
 
-    if (!profile) {
+    if (error || !profile) {
       return NextResponse.redirect(new URL("/login", req.url));
     }
 
-    // 🚫 Bloqueo por rol
-    if (pathname.startsWith("/alumno") && profile.role !== "alumno") {
-      return NextResponse.redirect(new URL("/profesor/perfil", req.url));
+    // 🚫 Bloqueo por tipo de usuario
+    // Alumno intentando entrar a /profesor
+    if (pathname.startsWith("/profesor") && !profile.is_admin) {
+      return NextResponse.redirect(new URL("/alumno/perfil", req.url));
     }
 
-    if (pathname.startsWith("/profesor") && profile.role !== "profesor") {
-      return NextResponse.redirect(new URL("/alumno/perfil", req.url));
+    // Admin intentando entrar a /alumno
+    if (pathname.startsWith("/alumno") && profile.is_admin) {
+      return NextResponse.redirect(new URL("/profesor/perfil", req.url));
     }
   }
 

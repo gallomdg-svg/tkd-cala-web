@@ -18,13 +18,18 @@ export default function PrivateTopBarWrapper() {
         return;
       }
 
-      const { data: profile } = await supabaseClient
+      const { data: profile, error } = await supabaseClient
         .from("profiles")
-        .select("role")
+        .select("is_admin")
         .eq("id", data.user.id)
         .single();
 
-      setRole(profile?.role ?? null);
+      if (error || !profile) {
+        setRole(null);
+        return;
+      }
+
+      setRole(profile.is_admin ? "profesor" : "alumno");
     };
 
     loadProfile();
