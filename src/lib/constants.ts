@@ -10,3 +10,11 @@ export const GRADUACIONES = [
   { key: 9, label: "Cinturón rojo" },
   { key: 10, label: "Cinturón rojo punta negra" },
 ];
+
+export const TURNOS = [
+  "Infantiles",
+  "Juveniles",
+  "Adolescentes y Adultos",
+] as const;
+
+export type Turno = (typeof TURNOS)[number];

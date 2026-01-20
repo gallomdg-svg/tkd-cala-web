@@ -24,9 +24,9 @@ export default function PrivateTopBar({ role }: Props) {
 
   const alumnoLinks = [
     { href: "/alumno/perfil", label: "Perfil" },
-    { href: "/alumno/teoria", label: "Teoría" },
-    { href: "/alumno/eventos", label: "Eventos" },
     { href: "/alumno/notificaciones", label: "Notificaciones" },
+    { href: "/alumno/eventos", label: "Eventos" },
+    { href: "/alumno/teoria", label: "Teoría" },
   ];
 
   const profesorLinks = [
@@ -34,7 +34,8 @@ export default function PrivateTopBar({ role }: Props) {
     { href: "/profesor/alumnos", label: "Alumnos" },
     { href: "/profesor/notificaciones", label: "Notificaciones" },
     { href: "/profesor/eventos", label: "Eventos" },
-    { href: "/alumno/teoria", label: "Teoría" },
+    { href: "/profesor/usuarios", label: "Usuarios" },
+    { href: "/profesor/teoria", label: "Teoría" },
   ];
 
   const links = role === "alumno" ? alumnoLinks : profesorLinks;

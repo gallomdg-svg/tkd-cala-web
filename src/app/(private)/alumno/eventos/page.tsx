@@ -22,6 +22,7 @@ export default async function EventosPage() {
   const { data: eventos } = await supabase
     .from("eventos")
     .select("*")
+    .eq("solo_profesores", false)
     .order("fecha", { ascending: true });
 
   return (
