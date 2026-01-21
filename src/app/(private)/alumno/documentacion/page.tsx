@@ -8,7 +8,6 @@ const DocumentacionPage = () => {
       <h1 className="text-2xl font-bold mb-4">Documentación</h1>
       <p className="mb-6 text-gray-700">
         En esta sección encontrarás toda la documentación necesaria para alumnos y profesores.
-        Actualmente, contamos con una única planilla de inscripción.
       </p>
 
       <div className="bg-white shadow rounded p-4">
