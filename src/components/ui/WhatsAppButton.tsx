@@ -51,3 +51,17 @@ export default function WhatsAppButton() {
     </div>
   )
 }
+
+export const openWhatsApp = () => {
+  const phone = "5491153842610";
+
+  const message = encodeURIComponent(
+    "Hola! Quiero sumarme a entrenar Taekwondo en TKD Cala 🥋"
+  );
+
+  window.open(
+    `https://wa.me/${phone}?text=${message}`,
+    "_blank",
+    "noopener,noreferrer"
+  );
+};

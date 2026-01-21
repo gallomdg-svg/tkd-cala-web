@@ -31,6 +31,12 @@ export default function QuienesSomosPage() {
           width={150}
           height={150}
         />
+        <Image
+          src="/logos/tkd_itfu.jpg"
+          alt="ITFU"
+          width={150}
+          height={150}
+        />
       </div>
 
       {/* Profesor + Texto */}
@@ -72,6 +78,43 @@ export default function QuienesSomosPage() {
           </div>
         ))}
       </div>
+{/* Equipo de Instructores y Colaboradores */}
+<div className="grid md:grid-cols-[300px_1fr] gap-10 items-center">
+  {/* Foto del equipo */}
+  <div className="flex justify-center">
+    <Image
+      src="/images/cinturones-negros.jpeg"
+      alt="Equipo de cinturones negros TKD Cala"
+      width={300}
+      height={300}
+      className="rounded-xl object-cover shadow-md"
+    />
+  </div>
+
+  {/* Texto */}
+  <div className="space-y-4">
+    <h3 className="text-2xl font-semibold text-gray-900">
+      Equipo de Instructores y Colaboradores
+    </h3>
+
+    <p className="text-gray-700 text-lg">
+      Nuestro dojang cuenta con el apoyo de cinturones negros formados en nuestra
+      escuela, quienes acompañan activamente las clases y los exámenes.
+    </p>
+
+    <p className="text-gray-700">
+      Su rol es fundamental en la asistencia técnica, el acompañamiento de los
+      alumnos y la transmisión de los valores del Taekwondo ITF, siempre bajo la
+      supervisión del profesor a cargo.
+    </p>
+  </div>
+</div>
+
+
+
+
     </section>
   )
+
+
 }

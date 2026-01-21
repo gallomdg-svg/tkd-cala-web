@@ -5,6 +5,8 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { supabaseClient } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
+import { openWhatsApp } from "@/components/ui/WhatsAppButton";
+
 
 export default function PublicNavbar() {
   const [user, setUser] = useState<User | null>(null);
@@ -60,6 +62,16 @@ export default function PublicNavbar() {
         <Link href="/lugar-de-practica" className="hover:text-red-600">
           Lugar de práctica
         </Link>
+
+{/* CTA WhatsApp */}
+  <button
+    onClick={openWhatsApp}
+    className="px-4 py-2 rounded-full bg-red-600 text-white font-medium
+               hover:bg-red-700 transition-colors shadow-sm"
+  >
+    Sumate a entrenar
+  </button>
+
 
         {/* Instagram */}
         <a

@@ -120,17 +120,42 @@ export default function LugarDePracticaPage() {
         </div>
 
         {/* Video */}
-        <div className="max-w-4xl mx-auto text-center space-y-4">
-          <h3 className="text-2xl font-semibold">
-            Conocé nuestro espacio de entrenamiento
-          </h3>
+        {/* Video + Detalle del espacio */}
+<div className="max-w-6xl mx-auto space-y-6">
+  <h3 className="text-2xl font-semibold text-center">
+    Conocé nuestro espacio de entrenamiento
+  </h3>
 
-          <video
-            src="/videos/lugar-practica.mp4"
-            controls
-            className="w-full max-w-md mx-auto rounded-xl shadow-md"
-          />
-        </div>
+  <div className="grid md:grid-cols-2 gap-10 items-start">
+    {/* Video */}
+    <div className="flex justify-center">
+      <video
+        src="/videos/lugar-practica.mp4"
+        controls
+        className="w-full max-w-md rounded-xl shadow-md"
+      />
+    </div>
+
+    {/* Detalle del lugar */}
+    <div className="bg-gray-50 rounded-xl shadow-md p-6">
+      <h4 className="text-xl font-semibold text-red-700 mb-4">
+        Sede San Telmo – Dojang
+      </h4>
+
+      <ul className="space-y-2 text-gray-700">
+        <li>✔️ Sala de 13 x 5 metros con piso de goma de alto impacto</li>
+        <li>✔️ Focos, escudos de potencia, palmetas y accesorios completos</li>
+        <li>✔️ Baños cómodos y vestuarios propios</li>
+        <li>✔️ Sacos de boxeo</li>
+        <li>✔️ Sala climatizada con aire acondicionado</li>
+        <li>✔️ Dispenser de agua</li>
+        <li>✔️ Ventiladores de techo</li>
+        <li>✔️ Gran ambiente de compañerismo</li>
+        <li>✔️ Excelente equipo de trabajo</li>
+      </ul>
+    </div>
+  </div>
+</div>
       </div>
     </section>
   );
