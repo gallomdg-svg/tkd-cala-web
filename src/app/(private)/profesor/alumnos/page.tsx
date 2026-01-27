@@ -3,14 +3,31 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { GRADUACIONES, TURNOS } from "@/lib/constants";
 import { Pencil } from "lucide-react";
 
-type Alumno = {
+/* =======================
+   Types
+======================= */
+
+type ProfileDB = {
+  full_name: string | null;
+  telefono: string | null;
+};
+
+type AlumnoDB = {
   id: string;
   nombre: string;
   apellido: string;
   turno: string;
   graduacion: number | string | null;
   activo: boolean;
+  cuota_pagada: boolean;
+  habilitado_examen: boolean;
   proxima_fecha_examen: string | null;
+  fecha_nacimiento: string | null;
+  profiles: ProfileDB | ProfileDB[] | null;
+};
+
+type Alumno = Omit<AlumnoDB, "profiles"> & {
+  profile: ProfileDB | null;
 };
 
 type PageProps = {
@@ -20,21 +37,41 @@ type PageProps = {
   }>;
 };
 
-const getGraduacionLabel = (
-  value: number | string | null
-) => {
+/* =======================
+   Helpers
+======================= */
+
+const getGraduacionLabel = (value: number | string | null) => {
   if (!value) return "-";
   const key = Number(value);
-
-  return (
-    GRADUACIONES.find((g) => g.key === key)
-      ?.label ?? "-"
-  );
+  return GRADUACIONES.find((g) => g.key === key)?.label ?? "-";
 };
 
-export default async function AlumnosPage({
-  searchParams,
-}: PageProps) {
+const calcularEdad = (fecha: string | null) => {
+  if (!fecha) return "-";
+  const hoy = new Date();
+  const nacimiento = new Date(fecha);
+  let edad = hoy.getFullYear() - nacimiento.getFullYear();
+  const m = hoy.getMonth() - nacimiento.getMonth();
+  if (m < 0 || (m === 0 && hoy.getDate() < nacimiento.getDate())) {
+    edad--;
+  }
+  return edad;
+};
+
+const Check = ({ value }: { value: boolean }) => (value ? "✔️" : "—");
+
+const Badge = ({ children }: { children: React.ReactNode }) => (
+  <span className="px-2 py-0.5 rounded text-xs bg-gray-100 text-gray-700">
+    {children}
+  </span>
+);
+
+/* =======================
+   Page
+======================= */
+
+export default async function AlumnosPage({ searchParams }: PageProps) {
   const params = await searchParams;
 
   const turnoFiltro = params.turno ?? "Todos";
@@ -42,11 +79,28 @@ export default async function AlumnosPage({
 
   const supabase = await createSupabaseServerClient();
 
+  /* ===== Query base ===== */
   let query = supabase
     .from("alumnos")
-    .select("*")
+    .select(`
+      id,
+      nombre,
+      apellido,
+      turno,
+      graduacion,
+      activo,
+      cuota_pagada,
+      habilitado_examen,
+      proxima_fecha_examen,
+      fecha_nacimiento,
+      profiles:profile_id (
+        full_name,
+        telefono
+      )
+    `)
     .order("apellido");
 
+  /* ===== Filtros (ANTES del await) ===== */
   if (turnoFiltro !== "Todos") {
     query = query.eq("turno", turnoFiltro);
   }
@@ -55,17 +109,29 @@ export default async function AlumnosPage({
     query = query.eq("activo", true);
   }
 
-  const { data: alumnos } = await query;
+  /* ===== Ejecutar query ===== */
+  const { data, error } = await query;
 
-  const listaAlumnos: Alumno[] = alumnos ?? [];
+  console.log("📌 SUPABASE DATA 👉", data);
+  console.log("❌ SUPABASE ERROR 👉", error);
+
+  /* ===== Normalización ===== */
+  const listaAlumnos: Alumno[] =
+    (data as AlumnoDB[] | null)?.map((a) => ({
+      ...a,
+      profile: Array.isArray(a.profiles)
+        ? a.profiles[0] ?? null
+        : a.profiles ?? null,
+    })) ?? [];
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-6">
-      <h1 className="text-2xl font-semibold">
-        Alumnos
-      </h1>
+    <div className="max-w-7xl mx-auto p-6 space-y-6">
+      <h1 className="text-2xl font-semibold">Alumnos</h1>
 
-      {/* Filtros */}
+
+      {/* =======================
+          Filtros
+      ======================= */}
       <form className="flex gap-4 items-center">
         <select
           name="turno"
@@ -89,97 +155,102 @@ export default async function AlumnosPage({
           Activo
         </label>
 
-        <button
-          type="submit"
-          className="border px-3 py-2 rounded"
-        >
+        <button type="submit" className="border px-3 py-2 rounded">
           Filtrar
         </button>
+
+<Link
+    href="/profesor/alumnos/nuevo"
+    className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded"
+  >
+    + Nuevo alumno
+  </Link>
+
+
       </form>
 
-      {/* Tabla */}
+
+
+      {/* =======================
+          Tabla
+      ======================= */}
       <div className="border rounded overflow-x-auto">
         <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-600">
+          <thead className="bg-gray-50 text-gray-600 text-xs uppercase">
             <tr>
-              <th className="p-3 text-left">
-                Nombre
-              </th>
-              <th className="p-3 text-left">
-                Turno
-              </th>
-              <th className="p-3 text-left">
-                Graduación
-              </th>
-              <th className="p-3 text-center">
-                Activo
-              </th>
-              <th className="p-3 text-left">
-                Próx. examen
-              </th>
-              <th className="p-3 text-right">
-                Acciones
-              </th>
+              <th className="p-3 text-left">Alumno</th>
+              <th className="p-3">Turno</th>
+              <th className="p-3">Graduación</th>
+              <th className="p-3 text-center">Edad</th>
+              <th className="p-3 text-center">Cuota</th>
+              <th className="p-3 text-center">Examen</th>
+              <th className="p-3">Próx. Ex.</th>
+              <th className="p-3">Referente</th>
+              <th className="p-3">Teléfono</th>
+              <th className="p-3 text-center">Activo</th>
+              <th className="p-3 text-right"></th>
             </tr>
           </thead>
 
           <tbody>
             {listaAlumnos.length === 0 && (
               <tr>
-                <td
-                  colSpan={6}
-                  className="p-4 text-center text-gray-500"
-                >
+                <td colSpan={11} className="p-6 text-center text-gray-500">
                   No hay alumnos para mostrar
                 </td>
               </tr>
             )}
 
             {listaAlumnos.map((alumno) => (
-              <tr
-                key={alumno.id}
-                className="border-t hover:bg-gray-50"
-              >
-                {/* Nombre */}
-                <td className="p-3">
-                  {alumno.apellido},{" "}
-                  {alumno.nombre}
+              <tr key={alumno.id} className="border-t hover:bg-gray-50">
+                <td className="p-3 font-medium">
+                  {alumno.apellido}, {alumno.nombre}
                 </td>
 
-                {/* Turno */}
                 <td className="p-3">
-                  {alumno.turno}
+                  <Badge>{alumno.turno}</Badge>
                 </td>
 
-                {/* Graduación */}
                 <td className="p-3">
-                  {getGraduacionLabel(
-                    alumno.graduacion
-                  )}
+                  {getGraduacionLabel(alumno.graduacion)}
                 </td>
 
-                {/* Activo */}
                 <td className="p-3 text-center">
-                  {alumno.activo ? "✔️" : "—"}
+                  {calcularEdad(alumno.fecha_nacimiento)}
                 </td>
 
-                {/* Próximo examen */}
+                <td className="p-3 text-center">
+                  <Check value={alumno.cuota_pagada} />
+                </td>
+
+                <td className="p-3 text-center">
+                  <Check value={alumno.habilitado_examen} />
+                </td>
+
                 <td className="p-3">
                   {alumno.proxima_fecha_examen
-                    ? new Date(
-                        alumno.proxima_fecha_examen
-                      ).toLocaleDateString()
+                    ? new Date(alumno.proxima_fecha_examen).toLocaleDateString()
                     : "-"}
                 </td>
 
-                {/* Acciones */}
+                <td className="p-3">
+                  {alumno.profile?.full_name ?? "-"}
+                </td>
+
+                <td className="p-3 text-gray-600">
+                  {alumno.profile?.telefono ?? "-"}
+                </td>
+
+                <td className="p-3 text-center">
+                  <Check value={alumno.activo} />
+                </td>
+
                 <td className="p-3 text-right">
                   <Link
                     href={`/profesor/alumnos/${alumno.id}`}
-                    title="Editar alumno"
-                    className="inline-flex text-blue-600 hover:text-blue-800"
+                    className="text-blue-600 hover:text-blue-800"
                   >
-                    <Pencil size={18} />
+                    <Pencil size={16} />
                   </Link>
                 </td>
               </tr>

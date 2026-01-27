@@ -12,29 +12,28 @@ export default function NuevoUsuarioPage() {
   const [esAlumno, setEsAlumno] = useState(false);
   const [loading, setLoading] = useState(false);
 
- async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  setLoading(true);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    await crearUsuario({
-      email,
-      full_name: fullName,
-      //es_alumno: esAlumno,
-    });
+    try {
+      await crearUsuario({
+        email,
+        full_name: fullName,
+        es_alumno: esAlumno,
+      });
 
-    router.push("/profesor/usuarios");
-  } catch (err) {
-    if (err instanceof Error) {
-      alert(err.message);
-    } else {
-      alert("Error inesperado al crear el usuario");
+      router.push("/profesor/usuarios");
+    } catch (err) {
+      if (err instanceof Error) {
+        alert(err.message);
+      } else {
+        alert("Error inesperado al crear el usuario");
+      }
+    } finally {
+      setLoading(false);
     }
-  } finally {
-    setLoading(false);
   }
-}
-
 
   return (
     <form
@@ -45,8 +44,9 @@ export default function NuevoUsuarioPage() {
         Nuevo usuario
       </h1>
 
+      {/* Email */}
       <input
-        className="border p-2 w-full"
+        className="border p-2 w-full rounded"
         placeholder="Email"
         required
         type="email"
@@ -54,15 +54,17 @@ export default function NuevoUsuarioPage() {
         onChange={(e) => setEmail(e.target.value)}
       />
 
+      {/* Nombre */}
       <input
-        className="border p-2 w-full"
+        className="border p-2 w-full rounded"
         placeholder="Nombre completo"
         required
         value={fullName}
         onChange={(e) => setFullName(e.target.value)}
       />
 
-      <label className="flex items-center gap-2">
+      {/* Es alumno */}
+      <label className="flex items-center gap-2 pt-2">
         <input
           type="checkbox"
           checked={esAlumno}
@@ -71,11 +73,12 @@ export default function NuevoUsuarioPage() {
         Es alumno
       </label>
 
-      <div className="flex gap-4">
+      {/* Acciones */}
+      <div className="flex gap-4 pt-4">
         <button
           type="submit"
           disabled={loading}
-          className="bg-black text-white px-4 py-2 rounded"
+          className="bg-black text-white px-4 py-2 rounded disabled:opacity-50"
         >
           Crear usuario
         </button>
@@ -91,4 +94,3 @@ export default function NuevoUsuarioPage() {
     </form>
   );
 }
-

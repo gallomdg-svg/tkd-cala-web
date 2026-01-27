@@ -3,68 +3,63 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { GRADUACIONES, TURNOS } from "@/lib/constants";
 
-
-type PageProps = {
-  params: Promise<{ id: string }>;
-};
-
-export default async function EditarAlumnoPage({ params }: PageProps) {
-  const { id } = await params;
+export default async function NuevoAlumnoPage() {
   const supabase = await createSupabaseServerClient();
 
-  const { data: alumno } = await supabase
-    .from("alumnos")
-    .select("*")
-    .eq("id", id)
-    .single();
+  // Traemos usuarios para el selector
+  const { data: usuarios } = await supabase
+    .from("profiles")
+    .select("id, full_name, email")
+    .order("full_name");
 
-  if (!alumno) {
-    redirect("/profesor/alumnos");
-  }
-
-  async function actualizarAlumno(formData: FormData) {
+  async function crearAlumno(formData: FormData) {
     "use server";
 
     const supabase = await createSupabaseServerClient();
 
-    const fechaNacimiento = formData.get("fecha_nacimiento") || null;
-    const proximaFechaExamen = formData.get("proxima_fecha_examen") || null;
+    const profile_id =
+      (formData.get("profile_id") as string) || null;
 
-    const { error }=await supabase
+    const { error } = await supabase
       .from("alumnos")
-      .update({
+      .insert({
         nombre: formData.get("nombre"),
         apellido: formData.get("apellido"),
         turno: formData.get("turno"),
         graduacion: Number(formData.get("graduacion")),
-        fecha_nacimiento: fechaNacimiento,
+        fecha_nacimiento:
+          formData.get("fecha_nacimiento") || null,
+        mail: formData.get("mail") || null,
         activo: formData.get("activo") === "on",
-        habilitado_examen: formData.get("habilitado_examen") === "on",
-        cuota_pagada: formData.get("cuota_pagada") === "on",
-        proxima_fecha_examen: proximaFechaExamen,
-      })
-      .eq("id", id);
-      console.log("UPDATE ERROR 👉", error);
+        habilitado_examen:
+          formData.get("habilitado_examen") === "on",
+        cuota_pagada:
+          formData.get("cuota_pagada") === "on",
+        profile_id,
+      });
+
+    if (error) {
+      console.error("ERROR creando alumno 👉", error);
+      throw new Error("No se pudo crear el alumno");
+    }
 
     redirect("/profesor/alumnos");
-    
   }
 
   return (
     <div className="max-w-2xl mx-auto p-6">
       <h1 className="text-xl font-semibold mb-6">
-        Editar alumno
+        Nuevo alumno
       </h1>
 
-      <form action={actualizarAlumno} className="space-y-4">
+      <form action={crearAlumno} className="space-y-4">
         {/* Nombre */}
         <div>
-          <label className="block text-sm text-gray-600 mb-1">
+          <label className="block text-sm mb-1">
             Nombre
           </label>
           <input
             name="nombre"
-            defaultValue={alumno.nombre}
             className="border p-2 w-full rounded"
             required
           />
@@ -72,25 +67,44 @@ export default async function EditarAlumnoPage({ params }: PageProps) {
 
         {/* Apellido */}
         <div>
-          <label className="block text-sm text-gray-600 mb-1">
+          <label className="block text-sm mb-1">
             Apellido
           </label>
           <input
             name="apellido"
-            defaultValue={alumno.apellido}
             className="border p-2 w-full rounded"
             required
           />
         </div>
 
+        {/* Usuario responsable */}
+        <div>
+          <label className="block text-sm mb-1">
+            Usuario responsable
+          </label>
+          <select
+            name="profile_id"
+            className="border p-2 w-full rounded"
+          >
+            <option value="">
+              — Sin usuario asociado —
+            </option>
+
+            {usuarios?.map((u) => (
+              <option key={u.id} value={u.id}>
+                {u.full_name ?? u.email}
+              </option>
+            ))}
+          </select>
+        </div>
+
         {/* Turno */}
         <div>
-          <label className="block text-sm text-gray-600 mb-1">
+          <label className="block text-sm mb-1">
             Turno
           </label>
           <select
             name="turno"
-            defaultValue={alumno.turno}
             className="border p-2 w-full rounded"
           >
             {TURNOS.map((t) => (
@@ -103,12 +117,11 @@ export default async function EditarAlumnoPage({ params }: PageProps) {
 
         {/* Graduación */}
         <div>
-          <label className="block text-sm text-gray-600 mb-1">
+          <label className="block text-sm mb-1">
             Graduación
           </label>
           <select
             name="graduacion"
-            defaultValue={alumno.graduacion}
             className="border p-2 w-full rounded"
           >
             {GRADUACIONES.map((g) => (
@@ -119,59 +132,21 @@ export default async function EditarAlumnoPage({ params }: PageProps) {
           </select>
         </div>
 
-        {/* Fecha nacimiento */}
-        <div>
-          <label className="block text-sm text-gray-600 mb-1">
-            Fecha de nacimiento
-          </label>
-          <input
-            type="date"
-            name="fecha_nacimiento"
-            defaultValue={alumno.fecha_nacimiento ?? ""}
-            className="border p-2 w-full rounded"
-          />
-        </div>
-
-        {/* Próximo examen */}
-        <div>
-          <label className="block text-sm text-gray-600 mb-1">
-            Próximo examen
-          </label>
-          <input
-            type="date"
-            name="proxima_fecha_examen"
-            defaultValue={alumno.proxima_fecha_examen ?? ""}
-            className="border p-2 w-full rounded"
-          />
-        </div>
-
         {/* Checks */}
         <div className="grid grid-cols-2 gap-4 pt-2">
           <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="activo"
-              defaultChecked={alumno.activo}
-            />
+            <input type="checkbox" name="activo" defaultChecked />
             Activo
           </label>
 
           <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="habilitado_examen"
-              defaultChecked={alumno.habilitado_examen}
-            />
+            <input type="checkbox" name="habilitado_examen" />
             Habilitado examen
           </label>
 
           <label className="flex items-center gap-2">
-            <input
-              type="checkbox"
-              name="cuota_pagada"
-              defaultChecked={alumno.cuota_pagada}
-            />
-            Cuota cuota_pagada
+            <input type="checkbox" name="cuota_pagada" />
+            Cuota paga
           </label>
         </div>
 
@@ -181,7 +156,7 @@ export default async function EditarAlumnoPage({ params }: PageProps) {
             type="submit"
             className="bg-black text-white px-4 py-2 rounded"
           >
-            Guardar
+            Crear
           </button>
 
           <Link

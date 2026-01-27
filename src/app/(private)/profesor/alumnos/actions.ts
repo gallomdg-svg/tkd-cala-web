@@ -20,7 +20,7 @@ export async function actualizarAlumno(
     turno: formData.get("turno"),
     graduacion: formData.get("graduacion"),
     activo: formData.get("activo") === "on",
-    cuota_paga:
+    cuota_pagada:
       formData.get("cuota_pagada") === "on",
     habilitado_examen:
       formData.get("habilitado_examen") ===

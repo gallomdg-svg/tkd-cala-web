@@ -10,32 +10,86 @@ const supabaseAdmin = createClient(
 type CrearUsuarioInput = {
   email: string;
   full_name: string;
-  // es_alumno?: boolean; // se usará más adelante
+  es_alumno: boolean;
 };
 
 export async function crearUsuario(data: CrearUsuarioInput) {
-  // 1. Crear usuario en Auth (invitar por email)
-  const { data: invite, error } =
+  console.log("🟢 crearUsuario START", data);
+
+  /* =========================
+     1. Crear usuario Auth
+  ========================== */
+  const { data: invite, error: inviteError } =
     await supabaseAdmin.auth.admin.inviteUserByEmail(
       data.email,
       {
         data: {
           full_name: data.full_name,
-          // es_alumno: data.es_alumno,
         },
       }
     );
 
-  if (error) {
-    throw new Error(error.message);
+  if (inviteError) {
+      throw new Error(inviteError.message);
   }
 
-  // ❗ IMPORTANTE
-  // NO crear profile acá
-  // El trigger on auth.users ya lo hace
+  const userId = invite.user.id;
+  
+
+  /* =========================
+     2. Obtener profile creado por trigger
+  ========================== */
+  const { data: profile, error: profileError } =
+    await supabaseAdmin
+      .from("profiles")
+      .select("id, full_name")
+      .eq("id", userId)
+      .single();
+
+
+  if (profileError || !profile) {
+    throw new Error("No se pudo obtener el profile del usuario");
+  }
+
+  /* =========================
+     3. Crear alumno si es_alumno
+  ========================== */
+  if (data.es_alumno) {
+    const partes = data.full_name.trim().split(" ");
+    const nombre = partes[0];
+    const apellido =
+      partes.slice(1).join(" ") || "-";
+
+    const alumnoPayload = {
+      nombre,
+      apellido,
+      mail: data.email,
+      activo: true,
+      profile_id: profile.id,
+    };
+
+    const { error: alumnoError } =
+      await supabaseAdmin
+        .from("alumnos")
+        .insert(alumnoPayload);
+
+    if (alumnoError) {
+      console.error(
+        "🔴 ERROR insert alumnos",
+        alumnoError
+      );
+
+      throw new Error(
+        "Usuario creado, pero falló la creación del alumno"
+      );
+    }
+
+
+  }
+
 
   return {
     ok: true,
-    user_id: invite.user.id,
+    user_id: userId,
   };
 }

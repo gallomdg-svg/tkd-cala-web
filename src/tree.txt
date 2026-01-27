@@ -1,0 +1,149 @@
+Listado de rutas de carpetas
+El número de serie del volumen es 1455-7D3F
+C:.
++---app
+¦   +---(auth)
+¦   ¦   +---login
+¦   +---(private)
+¦   ¦   +---alumno
+¦   ¦   ¦   +---documentacion
+¦   ¦   ¦   +---eventos
+¦   ¦   ¦   +---notificaciones
+¦   ¦   ¦   +---perfil
+¦   ¦   ¦   +---teoria
+¦   ¦   +---profesor
+¦   ¦       +---alumnos
+¦   ¦       ¦   +---[id]
+¦   ¦       +---eventos
+¦   ¦       ¦   +---nuevo
+¦   ¦       +---notificaciones
+¦   ¦       ¦   +---nueva
+¦   ¦       +---perfil
+¦   ¦       +---usuarios
+¦   ¦           +---nuevo
+¦   ¦           +---[id]
+¦   +---(public)
+¦       +---lugar-de-practica
+¦       +---quienes-somos
++---components
+¦   +---auth
+¦   +---layout
+¦   +---profile
+¦   +---ui
++---lib
+¦   +---supabase
++---types
+Listado de rutas de carpetas
+El número de serie del volumen es 1455-7D3F
+C:.
+¦   middleware.ts
+¦   tree.txt
+¦   
++---app
+¦   ¦   favicon.ico
+¦   ¦   globals.css
+¦   ¦   layout.tsx
+¦   ¦   
+¦   +---(auth)
+¦   ¦   ¦   layout.tsx
+¦   ¦   ¦   
+¦   ¦   +---login
+¦   ¦           page.tsx
+¦   ¦           
+¦   +---(private)
+¦   ¦   ¦   layout.tsx
+¦   ¦   ¦   
+¦   ¦   +---alumno
+¦   ¦   ¦   ¦   layout.tsx
+¦   ¦   ¦   ¦   
+¦   ¦   ¦   +---documentacion
+¦   ¦   ¦   ¦       page.tsx
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---eventos
+¦   ¦   ¦   ¦       page.tsx
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---notificaciones
+¦   ¦   ¦   ¦       page.tsx
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---perfil
+¦   ¦   ¦   ¦       page.tsx
+¦   ¦   ¦   ¦       
+¦   ¦   ¦   +---teoria
+¦   ¦   ¦           page.tsx
+¦   ¦   ¦           
+¦   ¦   +---profesor
+¦   ¦       ¦   layout.tsx
+¦   ¦       ¦   
+¦   ¦       +---alumnos
+¦   ¦       ¦   ¦   actions.ts
+¦   ¦       ¦   ¦   page.tsx
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   +---[id]
+¦   ¦       ¦           page.tsx
+¦   ¦       ¦           
+¦   ¦       +---eventos
+¦   ¦       ¦   ¦   actions.ts
+¦   ¦       ¦   ¦   EventoItem.tsx
+¦   ¦       ¦   ¦   page.tsx
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   +---nuevo
+¦   ¦       ¦           page.tsx
+¦   ¦       ¦           
+¦   ¦       +---notificaciones
+¦   ¦       ¦   ¦   actions.ts
+¦   ¦       ¦   ¦   NotificacionItem.tsx
+¦   ¦       ¦   ¦   page.tsx
+¦   ¦       ¦   ¦   
+¦   ¦       ¦   +---nueva
+¦   ¦       ¦           page.tsx
+¦   ¦       ¦           
+¦   ¦       +---perfil
+¦   ¦       ¦       page.tsx
+¦   ¦       ¦       
+¦   ¦       +---usuarios
+¦   ¦           ¦   actions.ts
+¦   ¦           ¦   page.tsx
+¦   ¦           ¦   
+¦   ¦           +---nuevo
+¦   ¦           ¦       page.tsx
+¦   ¦           ¦       
+¦   ¦           +---[id]
+¦   ¦                   page.tsx
+¦   ¦                   
+¦   +---(public)
+¦       ¦   layout.tsx
+¦       ¦   page.tsx
+¦       ¦   
+¦       +---lugar-de-practica
+¦       ¦       page.tsx
+¦       ¦       
+¦       +---quienes-somos
+¦               page.tsx
+¦               
++---components
+¦   +---auth
+¦   ¦       LogoutButton.tsx
+¦   ¦       
+¦   +---layout
+¦   ¦       PrivateTopBar.tsx
+¦   ¦       PrivateTopBarWrapper.tsx
+¦   ¦       PublicNavbar.tsx
+¦   ¦       
+¦   +---profile
+¦   ¦       ProfileCard.tsx
+¦   ¦       
+¦   +---ui
+¦           WhatsAppButton.tsx
+¦           
++---lib
+¦   ¦   auth.ts
+¦   ¦   constants.ts
+¦   ¦   teoria.ts
+¦   ¦   
+¦   +---supabase
+¦           client.ts
+¦           server.ts
+¦           
++---types
+        user.ts
+        
