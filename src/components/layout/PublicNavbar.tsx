@@ -38,7 +38,7 @@ export default function PublicNavbar() {
       <Link href="/quienes-somos" className="flex items-center gap-3">
         <Image
           src="/logos/tkd_cala_cts.png"
-          alt="Centro de Taekwondo Sud-Americano - Grupo Cala"
+          alt="Centro de Taekwon-Do SudAmericano - Grupo Cala"
           width={40}
           height={40}
           priority
