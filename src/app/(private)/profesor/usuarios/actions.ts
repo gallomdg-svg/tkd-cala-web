@@ -10,6 +10,7 @@ const supabaseAdmin = createClient(
 type CrearUsuarioInput = {
   email: string;
   full_name: string;
+  dni: string;
   es_alumno: boolean;
 };
 
@@ -17,38 +18,40 @@ export async function crearUsuario(data: CrearUsuarioInput) {
   console.log("🟢 crearUsuario START", data);
 
   /* =========================
-     1. Crear usuario Auth
+     1. Crear usuario Auth (con password)
   ========================== */
-  const { data: invite, error: inviteError } =
-    await supabaseAdmin.auth.admin.inviteUserByEmail(
-      data.email,
-      {
-        data: {
-          full_name: data.full_name,
-        },
-      }
-    );
+  const { data: userData, error: createError } =
+    await supabaseAdmin.auth.admin.createUser({
+      email: data.email,
+      password: data.dni,
+      email_confirm: true,
+      user_metadata: {
+        full_name: data.full_name,
+      },
+    });
 
-  if (inviteError) {
-      throw new Error(inviteError.message);
+  if (createError) {
+    throw new Error(createError.message);
   }
 
-  const userId = invite.user.id;
-  
+  const userId = userData.user.id;
 
   /* =========================
-     2. Obtener profile creado por trigger
+     2. Crear / actualizar profile
   ========================== */
-  const { data: profile, error: profileError } =
+  const { error: profileUpsertError } =
     await supabaseAdmin
       .from("profiles")
-      .select("id, full_name")
-      .eq("id", userId)
-      .single();
+      .upsert({
+        id: userId,
+        full_name: data.full_name,
+        dni: data.dni,
+        is_admin: !data.es_alumno,
+      });
 
-
-  if (profileError || !profile) {
-    throw new Error("No se pudo obtener el profile del usuario");
+  if (profileUpsertError) {
+    console.error("🔴 ERROR upsert profiles", profileUpsertError);
+    throw new Error("Error creando profile");
   }
 
   /* =========================
@@ -57,15 +60,14 @@ export async function crearUsuario(data: CrearUsuarioInput) {
   if (data.es_alumno) {
     const partes = data.full_name.trim().split(" ");
     const nombre = partes[0];
-    const apellido =
-      partes.slice(1).join(" ") || "-";
+    const apellido = partes.slice(1).join(" ") || "-";
 
     const alumnoPayload = {
       nombre,
       apellido,
       mail: data.email,
       activo: true,
-      profile_id: profile.id,
+      profile_id: userId,
     };
 
     const { error: alumnoError } =
@@ -74,22 +76,46 @@ export async function crearUsuario(data: CrearUsuarioInput) {
         .insert(alumnoPayload);
 
     if (alumnoError) {
-      console.error(
-        "🔴 ERROR insert alumnos",
-        alumnoError
-      );
+      console.error("🔴 ERROR insert alumnos", alumnoError);
 
       throw new Error(
         "Usuario creado, pero falló la creación del alumno"
       );
     }
-
-
   }
-
 
   return {
     ok: true,
     user_id: userId,
   };
+}
+
+export async function resetPassword(userId: string, newPassword: string) {
+  const { error } = await supabaseAdmin.auth.admin.updateUserById(
+    userId,
+    {
+      password: newPassword,
+    }
+  );
+
+  if (error) {
+    console.error("🔴 ERROR reset password", error);
+    throw new Error("No se pudo resetear el password");
+  }
+
+  return { ok: true };
+}
+
+export async function bajaUsuario(userId: string) {
+  const { error } = await supabaseAdmin
+    .from("profiles")
+    .update({ activo: false })
+    .eq("id", userId);
+
+  if (error) {
+    console.error("🔴 ERROR baja usuario", error);
+    throw new Error("No se pudo dar de baja el usuario");
+  }
+
+  return { ok: true };
 }

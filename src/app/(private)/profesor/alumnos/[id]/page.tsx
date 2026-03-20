@@ -3,7 +3,6 @@ import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { GRADUACIONES, TURNOS } from "@/lib/constants";
 
-
 type PageProps = {
   params: Promise<{ id: string }>;
 };
@@ -30,12 +29,12 @@ export default async function EditarAlumnoPage({ params }: PageProps) {
     const fechaNacimiento = formData.get("fecha_nacimiento") || null;
     const proximaFechaExamen = formData.get("proxima_fecha_examen") || null;
 
-    const { error }=await supabase
+    const { error } = await supabase
       .from("alumnos")
       .update({
         nombre: formData.get("nombre"),
         apellido: formData.get("apellido"),
-        turno: formData.get("turno"),
+        turno: Number(formData.get("turno")),
         graduacion: Number(formData.get("graduacion")),
         fecha_nacimiento: fechaNacimiento,
         activo: formData.get("activo") === "on",
@@ -44,10 +43,10 @@ export default async function EditarAlumnoPage({ params }: PageProps) {
         proxima_fecha_examen: proximaFechaExamen,
       })
       .eq("id", id);
-      console.log("UPDATE ERROR 👉", error);
+
+    console.log("UPDATE ERROR 👉", error);
 
     redirect("/profesor/alumnos");
-    
   }
 
   return (
@@ -94,8 +93,8 @@ export default async function EditarAlumnoPage({ params }: PageProps) {
             className="border p-2 w-full rounded"
           >
             {TURNOS.map((t) => (
-              <option key={t} value={t}>
-                {t}
+              <option key={t.key} value={t.key}>
+                {t.label}
               </option>
             ))}
           </select>

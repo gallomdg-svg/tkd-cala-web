@@ -9,8 +9,10 @@ export default function NuevoUsuarioPage() {
 
   const [email, setEmail] = useState("");
   const [fullName, setFullName] = useState("");
-  const [esAlumno, setEsAlumno] = useState(false);
+  const [esAlumno, setEsAlumno] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [dni, setDni] = useState("");
+
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -20,6 +22,7 @@ export default function NuevoUsuarioPage() {
       await crearUsuario({
         email,
         full_name: fullName,
+        dni,
         es_alumno: esAlumno,
       });
 
@@ -62,6 +65,15 @@ export default function NuevoUsuarioPage() {
         value={fullName}
         onChange={(e) => setFullName(e.target.value)}
       />
+  {/* dni */}
+      <input
+  className="border p-2 w-full"
+  placeholder="DNI"
+  required
+  value={dni}
+  onChange={(e) => setDni(e.target.value)}
+/>
+
 
       {/* Es alumno */}
       <label className="flex items-center gap-2 pt-2">

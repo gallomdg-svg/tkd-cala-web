@@ -15,7 +15,7 @@ type Alumno = {
   proxima_fecha_examen: string | null;
   es_titular: boolean;
   activo: boolean;
-  
+  dni: string | null;  
 };
 
 export default async function PerfilAlumnoPage() {
@@ -33,7 +33,7 @@ export default async function PerfilAlumnoPage() {
   // 👤 Profile
   const { data: profile } = await supabase
     .from("profiles")
-    .select("full_name, email, avatar_url")
+    .select("full_name, email, avatar_url, dni")
     .eq("id", user.id)
     .single();
 
@@ -59,7 +59,8 @@ export default async function PerfilAlumnoPage() {
       habilitado_examen,
       proxima_fecha_examen,
       activo,
-      es_titular
+      es_titular,
+      dni
     `)
     .eq("profile_id", user.id);
 
@@ -273,9 +274,7 @@ async function FilaAlumno({
 
       {/* Graduación */}
       <div>
-        <GraduacionBadge
-          graduacion={alumno.graduacion}
-        />
+        <GraduacionBar graduacion={alumno.graduacion} />
       </div>
 
       {/* Fecha nacimiento */}
@@ -332,31 +331,44 @@ async function FilaAlumno({
   );
 }
 
-
-function GraduacionBadge({
+function GraduacionBar({
   graduacion,
 }: {
   graduacion: string;
 }) {
-  const gradKey = Number(graduacion);
-
   const grad = GRADUACIONES.find(
-    (g) => g.key === gradKey
+    (g) => g.key === Number(graduacion)
   );
 
-  if (!grad) {
-    return (
-      <span className="inline-block px-3 py-1 rounded-full text-xs font-medium bg-gray-200 text-gray-800">
-        {graduacion}
-      </span>
-    );
-  }
+  if (!grad) return null;
 
   return (
-    <span
-      className={`inline-block px-3 py-1 rounded-full text-xs font-medium ${grad.color}`}
-    >
-      {grad.label}
-    </span>
+    <div className="flex flex-col gap-2">
+      {/* Barra tipo cinturón */}
+      <div className="w-full h-4 rounded-full overflow-hidden shadow-inner border flex relative">
+        
+        {/* base 75% */}
+        <div
+          className="w-3/4"
+          style={{ backgroundColor: grad.base }}
+        />
+
+        {/* punta 25% */}
+        <div
+          className="w-1/4"
+          style={{
+            backgroundColor: grad.punta || grad.base,
+          }}
+        />
+
+        {/* efecto luz (opcional pero recomendado) */}
+        <div className="absolute inset-0 bg-white/10 pointer-events-none" />
+      </div>
+
+      {/* texto */}
+      <span className="text-xs text-gray-700 font-medium">
+        {grad.label}
+      </span>
+    </div>
   );
 }

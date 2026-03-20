@@ -3,9 +3,7 @@
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
-export async function actualizarAlumno(
-  formData: FormData
-) {
+export async function actualizarAlumno(formData: FormData) {
   const supabase = await createSupabaseServerClient();
 
   const id = formData.get("id") as string;
@@ -17,17 +15,13 @@ export async function actualizarAlumno(
   const payload = {
     nombre: formData.get("nombre"),
     apellido: formData.get("apellido"),
-    turno: formData.get("turno"),
-    graduacion: formData.get("graduacion"),
+    turno: Number(formData.get("turno")),
+    graduacion: Number(formData.get("graduacion")),
     activo: formData.get("activo") === "on",
-    cuota_pagada:
-      formData.get("cuota_pagada") === "on",
-    habilitado_examen:
-      formData.get("habilitado_examen") ===
-      "on",
+    cuota_pagada: formData.get("cuota_pagada") === "on",
+    habilitado_examen: formData.get("habilitado_examen") === "on",
     proxima_fecha_examen:
-      formData.get("proxima_fecha_examen") ||
-      null,
+      formData.get("proxima_fecha_examen") || null,
   };
 
   const { error } = await supabase
@@ -36,13 +30,8 @@ export async function actualizarAlumno(
     .eq("id", id);
 
   if (error) {
-    console.error(
-      "Error actualizando alumno:",
-      error
-    );
-    throw new Error(
-      "No se pudo actualizar el alumno"
-    );
+    console.error("Error actualizando alumno:", error);
+    throw new Error("No se pudo actualizar el alumno");
   }
 
   redirect("/profesor/alumnos");

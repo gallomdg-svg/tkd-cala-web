@@ -2,100 +2,138 @@ export const GRADUACIONES = [
   {
     key: 1,
     label: "Cinturón blanco",
-    color: "bg-white text-black border",
+    base: "#ffffff",
+    punta: null,
   },
   {
     key: 2,
-    label: "Cinturón blanco punta amarilla",
-    color: "bg-yellow-100 text-yellow-900",
+    label: "Blanco punta amarilla",
+    base: "#ffffff",
+    punta: "#facc15",
   },
   {
     key: 3,
-    label: "Cinturón amarillo",
-    color: "bg-yellow-300 text-yellow-900",
+    label: "Amarillo",
+    base: "#facc15",
+    punta: null,
   },
   {
     key: 4,
-    label: "Cinturón amarillo punta verde",
-    color: "bg-green-100 text-green-900",
+    label: "Amarillo punta verde",
+    base: "#facc15",
+    punta: "#22c55e",
   },
   {
     key: 5,
-    label: "Cinturón verde",
-    color: "bg-green-300 text-green-900",
+    label: "Verde",
+    base: "#22c55e",
+    punta: null,
   },
   {
     key: 6,
-    label: "Cinturón verde punta azul",
-    color: "bg-blue-100 text-blue-900",
+    label: "Verde punta azul",
+    base: "#22c55e",
+    punta: "#3b82f6",
   },
   {
     key: 7,
-    label: "Cinturón azul",
-    color: "bg-blue-300 text-blue-900",
+    label: "Azul",
+    base: "#3b82f6",
+    punta: null,
   },
   {
     key: 8,
-    label: "Cinturón azul punta roja",
-    color: "bg-red-100 text-red-900",
+    label: "Azul punta roja",
+    base: "#3b82f6",
+    punta: "#ef4444",
   },
   {
     key: 9,
-    label: "Cinturón rojo",
-    color: "bg-red-300 text-red-900",
+    label: "Rojo",
+    base: "#ef4444",
+    punta: null,
   },
   {
     key: 10,
-    label: "Cinturón rojo punta negra",
-    color: "bg-black text-white",
+    label: "Rojo punta negra",
+    base: "#ef4444",
+    punta: "#000000",
   },
   {
-  key: 11,
-  label: "Cinturón negro 1° Dan",
-  color: "bg-black text-white",
-},
-{
-  key: 12,
-  label: "Cinturón negro 2° Dan",
-  color: "bg-black text-white",
-},
-{
-  key: 13,
-  label: "Cinturón negro 3° Dan",
-  color: "bg-black text-white",
-},
-{
-  key: 14,
-  label: "Cinturón negro 4° Dan",
-  color: "bg-black text-white",
-},
-{
-  key: 15,
-  label: "Cinturón negro 5° Dan",
-  color: "bg-black text-white",
-},
-{
-  key: 16,
-  label: "Cinturón negro 6° Dan",
-  color: "bg-black text-white",
-},
+    key: 11,
+    label: "Negro 1° Dan",
+    base: "#000000",
+    punta: null,
+  },
+  {
+    key: 12,
+    label: "Negro 2° Dan",
+    base: "#000000",
+    punta: null,
+  },
+    {
+    key: 13,
+    label: "Negro 3° Dan",
+    base: "#000000",
+    punta: null,
+  },
+    {
+    key: 14,
+    label: "Negro 4° Dan",
+    base: "#000000",
+    punta: null,
+  },
+    {
+    key: 15,
+    label: "Negro 5° Dan",
+    base: "#000000",
+    punta: null,
+  },
+    {
+    key: 16,
+    label: "Negro 6° Dan",
+    base: "#000000",
+    punta: null,
+  },
+    {
+    key: 17,
+    label: "Negro 7° Dan",
+    base: "#000000",
+    punta: null,
+  },
+    {
+    key: 18,
+    label: "Negro 8° Dan",
+    base: "#000000",
+    punta: null,
+  },
+    {
+    key: 19,
+    label: "Negro 9° Dan",
+    base: "#000000",
+    punta: null,
+  },
 ];
 
 
 export const TURNOS = [
-  "Infantiles",
-  "Juveniles",
-  "Adolescentes y Adultos",
+  {
+    key: 1,
+    label: "Infantiles",
+  },
+  {
+    key: 2,
+    label: "Juveniles",
+  },
+  {
+    key: 3,
+    label: "Adolescentes y Adultos",
+  },
 ] as const;
 
-export type Turno = (typeof TURNOS)[number];
+export type TurnoKey = (typeof TURNOS)[number]["key"];
 
-export function getGraduacionLabel(graduacion: string | number) {
-  const key = Number(graduacion);
-
-  const grad = GRADUACIONES.find(
-    (g) => g.key === key
-  );
-
-  return grad?.label ?? null;
+export function getTurnoLabel(turno: number | string) {
+  const key = Number(turno);
+  return TURNOS.find((t) => t.key === key)?.label ?? null;
 }

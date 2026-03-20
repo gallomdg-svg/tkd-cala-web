@@ -5,6 +5,7 @@ type Profile = {
   role: string;
   avatar_url: string | null;
   email: string | null;
+  dni: string | null;
 };
 
 export default function ProfileCard({ profile }: { profile: Profile }) {
@@ -35,7 +36,7 @@ export default function ProfileCard({ profile }: { profile: Profile }) {
           <div className="grid grid-cols-1 gap-3">
             <InfoRow label="Nombre completo" value={profile.full_name} />
             <InfoRow label="Email" value={profile.email} />
-            <InfoRow label="Rol" value={profile.role} />
+            <InfoRow label="DNI" value={profile.dni} />
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { Plus, Pencil } from "lucide-react";
+import { Plus, Pencil, KeyRound, UserX } from "lucide-react";
+import { resetPassword, bajaUsuario } from "./actions";
 
 type Usuario = {
   id: string;
@@ -23,6 +24,16 @@ export default async function UsuariosPage() {
   }
 
   const listaUsuarios: Usuario[] = usuarios ?? [];
+
+  async function handleResetPassword(userId: string) {
+    "use server";
+    await resetPassword(userId, "123456"); // 🔥 podés cambiar por DNI después
+  }
+
+  async function handleBajaUsuario(userId: string) {
+    "use server";
+    await bajaUsuario(userId);
+  }
 
   return (
     <div className="max-w-6xl mx-auto p-6 space-y-6">
@@ -94,7 +105,8 @@ export default async function UsuariosPage() {
                 </td>
 
                 {/* Acciones */}
-                <td className="p-3 text-right">
+                <td className="p-3 text-right space-x-3">
+                  {/* Editar */}
                   <Link
                     href={`/profesor/usuarios/${u.id}`}
                     title="Editar usuario"
@@ -102,6 +114,28 @@ export default async function UsuariosPage() {
                   >
                     <Pencil size={18} />
                   </Link>
+
+                  {/* Reset Password */}
+                  <form action={handleResetPassword.bind(null, u.id)} className="inline">
+                    <button
+                      type="submit"
+                      title="Resetear password (123456)"
+                      className="text-yellow-600 hover:text-yellow-800"
+                    >
+                      <KeyRound size={18} />
+                    </button>
+                  </form>
+
+                  {/* Baja lógica */}
+                  <form action={handleBajaUsuario.bind(null, u.id)} className="inline">
+                    <button
+                      type="submit"
+                      title="Inactivar usuario"
+                      className="text-red-600 hover:text-red-800"
+                    >
+                      <UserX size={18} />
+                    </button>
+                  </form>
                 </td>
               </tr>
             ))}

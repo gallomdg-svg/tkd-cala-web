@@ -35,20 +35,27 @@ export default async function EditarUsuarioPage({ params }: PageProps) {
     const supabase = await createSupabaseServerClient();
 
     const full_name = formData.get("full_name") as string;
-    //const es_alumno = formData.get("es_alumno") === "on";
-console.log("ID a actualizar 👉", id);
+    const dni = formData.get("dni") as string;
+    const es_alumno = formData.get("es_alumno") === "on";
+
+    console.log("ID a actualizar 👉", id);
+
     const { error } = await supabase
       .from("profiles")
       .update({
         full_name,
-      //  es_alumno,
+        dni,
+        is_admin: !es_alumno,
       })
       .eq("id", id);
-      console.log("UPDATE profiles 👉", {
-  id,
-  full_name,
-  error,
-});
+
+    console.log("UPDATE profiles 👉", {
+      id,
+      full_name,
+      dni,
+      is_admin: !es_alumno,
+      error,
+    });
 
     if (error) {
       console.error("UPDATE USUARIO ERROR 👉", error);
@@ -88,12 +95,24 @@ console.log("ID a actualizar 👉", id);
           />
         </div>
 
+        <div>
+          <label className="block text-sm font-medium mb-1">
+            DNI
+          </label>
+          <input
+            name="dni"
+            defaultValue={usuario.dni ?? ""}
+            required
+            className="w-full border rounded px-3 py-2"
+          />
+        </div>
+
         {/* Es alumno */}
         <div className="flex items-center gap-2">
           <input
             type="checkbox"
             name="es_alumno"
-            defaultChecked={usuario.es_alumno ?? false}
+            defaultChecked={!usuario.is_admin}
             className="h-4 w-4"
           />
           <label className="text-sm">Es alumno</label>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
-import { GRADUACIONES, TURNOS } from "@/lib/constants";
+import { GRADUACIONES, TURNOS, getTurnoLabel } from "@/lib/constants";
 import { Pencil } from "lucide-react";
 
 /* =======================
@@ -16,13 +16,14 @@ type AlumnoDB = {
   id: string;
   nombre: string;
   apellido: string;
-  turno: string;
-  graduacion: number | string | null;
+  turno: number;
+  graduacion: number | null;
   activo: boolean;
   cuota_pagada: boolean;
   habilitado_examen: boolean;
   proxima_fecha_examen: string | null;
   fecha_nacimiento: string | null;
+  dni: string | null;
   profiles: ProfileDB | ProfileDB[] | null;
 };
 
@@ -41,10 +42,9 @@ type PageProps = {
    Helpers
 ======================= */
 
-const getGraduacionLabel = (value: number | string | null) => {
+const getGraduacionLabel = (value: number | null) => {
   if (!value) return "-";
-  const key = Number(value);
-  return GRADUACIONES.find((g) => g.key === key)?.label ?? "-";
+  return GRADUACIONES.find((g) => g.key === value)?.label ?? "-";
 };
 
 const calcularEdad = (fecha: string | null) => {
@@ -79,7 +79,6 @@ export default async function AlumnosPage({ searchParams }: PageProps) {
 
   const supabase = await createSupabaseServerClient();
 
-  /* ===== Query base ===== */
   let query = supabase
     .from("alumnos")
     .select(`
@@ -93,6 +92,7 @@ export default async function AlumnosPage({ searchParams }: PageProps) {
       habilitado_examen,
       proxima_fecha_examen,
       fecha_nacimiento,
+      dni,
       profiles:profile_id (
         full_name,
         telefono
@@ -100,22 +100,19 @@ export default async function AlumnosPage({ searchParams }: PageProps) {
     `)
     .order("apellido");
 
-  /* ===== Filtros (ANTES del await) ===== */
   if (turnoFiltro !== "Todos") {
-    query = query.eq("turno", turnoFiltro);
+    query = query.eq("turno", Number(turnoFiltro));
   }
 
   if (activoFiltro) {
     query = query.eq("activo", true);
   }
 
-  /* ===== Ejecutar query ===== */
   const { data, error } = await query;
 
   console.log("📌 SUPABASE DATA 👉", data);
   console.log("❌ SUPABASE ERROR 👉", error);
 
-  /* ===== Normalización ===== */
   const listaAlumnos: Alumno[] =
     (data as AlumnoDB[] | null)?.map((a) => ({
       ...a,
@@ -128,10 +125,7 @@ export default async function AlumnosPage({ searchParams }: PageProps) {
     <div className="max-w-7xl mx-auto p-6 space-y-6">
       <h1 className="text-2xl font-semibold">Alumnos</h1>
 
-
-      {/* =======================
-          Filtros
-      ======================= */}
+      {/* Filtros */}
       <form className="flex gap-4 items-center">
         <select
           name="turno"
@@ -140,8 +134,8 @@ export default async function AlumnosPage({ searchParams }: PageProps) {
         >
           <option value="Todos">Todos</option>
           {TURNOS.map((t) => (
-            <option key={t} value={t}>
-              {t}
+            <option key={t.key} value={t.key}>
+              {t.label}
             </option>
           ))}
         </select>
@@ -159,21 +153,15 @@ export default async function AlumnosPage({ searchParams }: PageProps) {
           Filtrar
         </button>
 
-<Link
-    href="/profesor/alumnos/nuevo"
-    className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded"
-  >
-    + Nuevo alumno
-  </Link>
-
-
+        <Link
+          href="/profesor/alumnos/nuevo"
+          className="flex items-center gap-2 bg-black text-white px-4 py-2 rounded"
+        >
+          + Nuevo alumno
+        </Link>
       </form>
 
-
-
-      {/* =======================
-          Tabla
-      ======================= */}
+      {/* Tabla */}
       <div className="border rounded overflow-x-auto">
         <table className="w-full text-sm">
           <thead className="bg-gray-50 text-gray-600 text-xs uppercase">
@@ -208,7 +196,7 @@ export default async function AlumnosPage({ searchParams }: PageProps) {
                 </td>
 
                 <td className="p-3">
-                  <Badge>{alumno.turno}</Badge>
+                  <Badge>{getTurnoLabel(alumno.turno)}</Badge>
                 </td>
 
                 <td className="p-3">

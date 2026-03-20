@@ -2,11 +2,11 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { GRADUACIONES, TURNOS } from "@/lib/constants";
+import UserAutocomplete from "@/components/UserAutocomplete";
 
 export default async function NuevoAlumnoPage() {
   const supabase = await createSupabaseServerClient();
 
-  // Traemos usuarios para el selector
   const { data: usuarios } = await supabase
     .from("profiles")
     .select("id, full_name, email")
@@ -25,7 +25,7 @@ export default async function NuevoAlumnoPage() {
       .insert({
         nombre: formData.get("nombre"),
         apellido: formData.get("apellido"),
-        turno: formData.get("turno"),
+        turno: Number(formData.get("turno")),
         graduacion: Number(formData.get("graduacion")),
         fecha_nacimiento:
           formData.get("fecha_nacimiento") || null,
@@ -82,20 +82,7 @@ export default async function NuevoAlumnoPage() {
           <label className="block text-sm mb-1">
             Usuario responsable
           </label>
-          <select
-            name="profile_id"
-            className="border p-2 w-full rounded"
-          >
-            <option value="">
-              — Sin usuario asociado —
-            </option>
-
-            {usuarios?.map((u) => (
-              <option key={u.id} value={u.id}>
-                {u.full_name ?? u.email}
-              </option>
-            ))}
-          </select>
+          <UserAutocomplete usuarios={usuarios ?? []} />
         </div>
 
         {/* Turno */}
@@ -108,8 +95,8 @@ export default async function NuevoAlumnoPage() {
             className="border p-2 w-full rounded"
           >
             {TURNOS.map((t) => (
-              <option key={t} value={t}>
-                {t}
+              <option key={t.key} value={t.key}>
+                {t.label}
               </option>
             ))}
           </select>
