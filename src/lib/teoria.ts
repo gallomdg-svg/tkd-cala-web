@@ -6,28 +6,28 @@ export async function getTeoriaUrl(
   turno: string | null,
   graduacion: string | null
 ): Promise<string | null> {
-  // 🛑 Validación defensiva (no debería pasar, pero protege)
-  if (!turno || !graduacion) {
+  // 🛑 Validación defensiva
+  if (!graduacion) {
     return null;
   }
 
   const supabase = await createSupabaseServerClient();
 
-  // 📂 Carpeta según turno (misma lógica que ya tenías)
-  const carpeta = turno
-    .toLowerCase()
-    .includes("infantil")
+  // 📂 Carpeta según turno (robusto ante null/undefined/otros tipos)
+  const turnoStr = String(turno ?? "").toLowerCase();
+
+  const carpeta = turnoStr.includes("infantil")
     ? "infantil"
     : "adulto";
 
-  // 🎓 Normalizar graduación (viene como string numérico)
+  // 🎓 Normalizar graduación
   const gradKey = Number(graduacion);
 
   if (Number.isNaN(gradKey)) {
     return null;
   }
 
-  // 🎓 Verificar que la graduación exista en constants
+  // 🎓 Verificar que exista en constants
   const grad = GRADUACIONES.find(
     (g) => g.key === gradKey
   );
@@ -36,7 +36,7 @@ export async function getTeoriaUrl(
     return null;
   }
 
-  // 📄 Path del archivo (MISMO criterio que antes)
+  // 📄 Path del archivo
   const path = `${carpeta}/teoria-${grad.key}.pdf`;
 
   const { data, error } = await supabase.storage
@@ -44,13 +44,10 @@ export async function getTeoriaUrl(
     .createSignedUrl(path, 60 * 60); // 1 hora
 
   if (error) {
-    // 👉 CASO ESPERADO: no existe el archivo (ej. cinturón negro)
-    // No es un error funcional, simplemente no se muestra
     if (error.message === "Object not found") {
       return null;
     }
 
-    // 👉 Cualquier otro error sí es relevante
     console.error("❌ Error storage:", error.message);
     return null;
   }
