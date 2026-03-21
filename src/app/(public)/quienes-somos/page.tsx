@@ -54,9 +54,10 @@ export default function QuienesSomosPage() {
         <div className="max-w-5xl mx-auto flex flex-wrap justify-center gap-12 px-6">
           {[
             { src: "/logos/tkd_cala_cts.png", alt: "CTS" },
+            { src: "/logos/tkd_itfu.png", alt: "ITF" },
+            { src: "/logos/futra.png", alt: "Futra" },
             { src: "/logos/tkd_cala_logo.png", alt: "TKD Cala" },
-            { src: "/logos/tkd_itfu.jpg", alt: "ITF" },
-          ].map((logo) => (
+               ].map((logo) => (
             <Image
               key={logo.alt}
               src={logo.src}
