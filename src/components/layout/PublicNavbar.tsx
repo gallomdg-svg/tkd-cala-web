@@ -62,6 +62,9 @@ export default function PublicNavbar() {
         <Link href="/lugar-de-practica" className="hover:text-red-600">
           Lugar de práctica
         </Link>
+        <Link href="/teoria" className="hover:text-red-600">
+          Teoría
+        </Link>
 
 {/* CTA WhatsApp */}
   <button
