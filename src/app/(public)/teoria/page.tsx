@@ -103,7 +103,7 @@ export default async function TeoriaPublicaPage() {
 
                       {siguiente && (
                         <span className="text-xs font-medium text-blue-600 mt-1">
-                          🎯 Examen: {siguiente.label}
+                          🎯 Examen para: {siguiente.label}
                         </span>
                       )}
                     </div>
