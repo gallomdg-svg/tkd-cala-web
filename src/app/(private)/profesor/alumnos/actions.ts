@@ -1,9 +1,12 @@
 "use server";
 
+import { requireAdmin } from "@/lib/require-admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
 export async function actualizarAlumno(formData: FormData) {
+  await requireAdmin();
+
   const supabase = await createSupabaseServerClient();
 
   const id = formData.get("id") as string;

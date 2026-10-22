@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/require-admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -9,6 +10,8 @@ import { redirect } from "next/navigation";
  * (solo debe ser usada por profesores/admin)
  */
 export async function borrarNotificacion(id: string) {
+  await requireAdmin();
+
   const supabase = await createSupabaseServerClient();
 
   await supabase
@@ -26,6 +29,8 @@ export async function borrarNotificacion(id: string) {
 export async function crearNotificacion(
   formData: FormData
 ) {
+  await requireAdmin();
+
   const supabase = await createSupabaseServerClient();
 
   const titulo = formData.get("titulo") as string;

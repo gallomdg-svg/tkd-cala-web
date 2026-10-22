@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/require-admin";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
@@ -8,6 +9,8 @@ import { redirect } from "next/navigation";
  * Borra un evento
  */
 export async function borrarEvento(id: string) {
+  await requireAdmin();
+
   const supabase = await createSupabaseServerClient();
 
   await supabase
@@ -22,6 +25,8 @@ export async function borrarEvento(id: string) {
  * Crea un evento y vuelve al listado
  */
 export async function crearEvento(formData: FormData) {
+  await requireAdmin();
+
   const supabase = await createSupabaseServerClient();
 
   const titulo = formData.get("titulo") as string;

@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAdmin } from "@/lib/require-admin";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseAdmin = createClient(
@@ -15,6 +16,8 @@ type CrearUsuarioInput = {
 };
 
 export async function crearUsuario(data: CrearUsuarioInput) {
+  await requireAdmin();
+
   console.log("🟢 crearUsuario START", data);
 
   /* =========================
@@ -91,6 +94,8 @@ export async function crearUsuario(data: CrearUsuarioInput) {
 }
 
 export async function resetPassword(userId: string, newPassword: string) {
+  await requireAdmin();
+
   const { error } = await supabaseAdmin.auth.admin.updateUserById(
     userId,
     {
@@ -107,6 +112,8 @@ export async function resetPassword(userId: string, newPassword: string) {
 }
 
 export async function bajaUsuario(userId: string) {
+  await requireAdmin();
+
   const { error } = await supabaseAdmin
     .from("profiles")
     .update({ activo: false })
