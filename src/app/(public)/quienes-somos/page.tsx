@@ -78,7 +78,7 @@ export default function QuienesSomosPage() {
             alt="Profesor Sergio Cala"
             width={220}
             height={220}
-            className="rounded-full shadow-xl object-cover"
+            className="rounded-full shadow-xl object-cover w-[180px] h-[180px] md:w-[220px] md:h-[220px]"
           />
         </div>
 
@@ -136,7 +136,7 @@ export default function QuienesSomosPage() {
           alt="Equipo de instructores TKD Cala"
           width={360}
           height={360}
-          className="rounded-2xl shadow-lg object-cover"
+          className="rounded-2xl shadow-lg object-cover w-full max-w-[360px] h-auto mx-auto"
         />
 
         <div className="space-y-4">

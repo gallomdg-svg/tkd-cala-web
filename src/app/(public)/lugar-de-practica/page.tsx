@@ -44,12 +44,12 @@ export default function LugarDePracticaPage() {
               alt="Centro Cultural Leopoldo González"
               width={400}
               height={400}
-              className="rounded-xl object-cover shadow-md w-full"
+              className="rounded-xl object-cover shadow-md w-full h-auto"
             />
           </div>
 
           {/* Mapa */}
-          <div className="md:col-span-1 w-full h-[400px] rounded-xl overflow-hidden border">
+          <div className="md:col-span-1 w-full h-[300px] md:h-[400px] rounded-xl overflow-hidden border">
             <iframe
               title="Mapa Centro Leopoldo González"
               src="https://www.google.com/maps?q=Av.+Independencia+448,+Buenos+Aires&output=embed"
@@ -74,7 +74,7 @@ export default function LugarDePracticaPage() {
                 alt="Turno infantil"
                 width={400}
                 height={260}
-                className="object-cover"
+                className="object-cover w-full h-auto"
               />
               <div className="p-5 text-center">
                 <h4 className="font-semibold text-lg">Infantiles</h4>
@@ -90,7 +90,7 @@ export default function LugarDePracticaPage() {
                 alt="Turno juvenil"
                 width={400}
                 height={260}
-                className="object-cover"
+                className="object-cover w-full h-auto"
               />
               <div className="p-5 text-center">
                 <h4 className="font-semibold text-lg">Juveniles</h4>
@@ -106,7 +106,7 @@ export default function LugarDePracticaPage() {
                 alt="Turno adultos"
                 width={400}
                 height={260}
-                className="object-cover"
+                className="object-cover w-full h-auto"
               />
               <div className="p-5 text-center">
                 <h4 className="font-semibold text-lg">

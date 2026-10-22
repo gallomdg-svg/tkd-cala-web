@@ -94,7 +94,7 @@ export default async function TeoriaPublicaPage() {
                 return (
                   <li
                     key={`${turno}-${grad.key}`}
-                    className="flex items-center justify-between bg-gray-50 border rounded p-3"
+                    className="flex items-center justify-between gap-3 bg-gray-50 border rounded p-3"
                   >
                     <div className="flex flex-col">
                       <span className="font-medium">
@@ -112,7 +112,7 @@ export default async function TeoriaPublicaPage() {
                       href={url!}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 hover:underline"
+                      className="text-blue-600 hover:underline shrink-0 whitespace-nowrap"
                     >
                       📖 Ver teoría
                     </a>
